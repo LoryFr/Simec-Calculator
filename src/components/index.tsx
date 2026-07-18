@@ -1,11 +1,6 @@
 import { createSignal, createMemo, For } from "solid-js";
 import type { EngravingKey, ScreenUnitKey, VolumeUnitKey } from "../libraries/anilox";
-import { K, SCREEN_UNITS, ENGRAVINGS, RATIOS, VOLUME_UNITS } from "../libraries/anilox";
-
-function computeOptimumCm3m2(screenLcm: number, cellFactor: number) {
-  if (screenLcm <= 0) return 0;
-  return (K / Math.pow(screenLcm, 2)) * cellFactor;
-}
+import { K, SCREEN_UNITS, ENGRAVINGS, RATIOS, VOLUME_UNITS, computeOptimumCm3m2, GAUGE_MAX_CM3M2 } from "../libraries/anilox";
 
 export default function AniloxCalculator() {
   const [engraving, setEngraving] = createSignal<EngravingKey>("H60");
@@ -36,7 +31,7 @@ export default function AniloxCalculator() {
     };
   });
 
-  const gaugeMax = createMemo(() => Math.max(15, thresholds().max * 1.3));
+  const gaugeMax = createMemo(() => VOLUME_UNITS[volumeUnit()].fromCm3m2(GAUGE_MAX_CM3M2));
 
   const cx = 300;
   const cy = 260;
@@ -44,7 +39,7 @@ export default function AniloxCalculator() {
 
   const valueToAngleDeg = (value: number) => {
     const clamped = Math.min(Math.max(value, 0), gaugeMax());
-    return 180 - (clamped / gaugeMax()) * 180; // 180° a sinistra (0), 0° a destra (max)
+    return 180 - (clamped / gaugeMax()) * 180;
   };
 
   const polarPoint = (angleDeg: number, radius: number) => {
@@ -62,11 +57,12 @@ export default function AniloxCalculator() {
   });
 
   return (
-    <div>
-      <div>
-        <label>
+    <div class="mx-auto max-w-3xl space-y-8 rounded-xl border border-neutral-200 bg-white p-6 font-sans text-neutral-800 shadow-sm">
+      <div class="flex flex-wrap gap-6 border-b border-neutral-200 pb-6">
+        <label class="flex flex-col gap-1 text-xs font-medium uppercase tracking-wide text-neutral-500">
           Engraving{" "}
           <select
+            class="rounded-md border border-neutral-300 bg-white px-3 py-1.5 text-sm text-neutral-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-neutral-400"
             value={engraving()}
             onChange={(e) => setEngraving(e.currentTarget.value as EngravingKey)}
           >
@@ -76,9 +72,10 @@ export default function AniloxCalculator() {
           </select>
         </label>
 
-        <label>
+        <label class="flex flex-col gap-1 text-xs font-medium uppercase tracking-wide text-neutral-500">
           Screen Type{" "}
           <select
+            class="rounded-md border border-neutral-300 bg-white px-3 py-1.5 text-sm text-neutral-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-neutral-400"
             value={screenUnit()}
             onChange={(e) => setScreenUnit(e.currentTarget.value as ScreenUnitKey)}
           >
@@ -88,9 +85,10 @@ export default function AniloxCalculator() {
           </select>
         </label>
 
-        <label>
+        <label class="flex flex-col gap-1 text-xs font-medium uppercase tracking-wide text-neutral-500">
           Transfer Volume{" "}
           <select
+            class="rounded-md border border-neutral-300 bg-white px-3 py-1.5 text-sm text-neutral-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-neutral-400"
             value={volumeUnit()}
             onChange={(e) => setVolumeUnit(e.currentTarget.value as VolumeUnitKey)}
           >
@@ -101,58 +99,77 @@ export default function AniloxCalculator() {
         </label>
       </div>
 
-      <svg viewBox="0 0 600 300" width="600" height="300">
+      <div class="flex justify-center">
+        <svg viewBox="0 0 600 300" class="w-full max-w-xl text-neutral-300">
+          <For each={ticks()}>
+            {(t) => {
+              const p1 = polarPoint(valueToAngleDeg(t), r - 45);
+              const p2 = polarPoint(valueToAngleDeg(t), r - 55);
+              return (
+                <line x1={p1.x} y1={p1.y} x2={p2.x} y2={p2.y} stroke="currentColor" stroke-width="2" />
+              );
+            }}
+          </For>
 
-        <For each={ticks()}>
-          {(t) => {
-            const p1 = polarPoint(valueToAngleDeg(t), r - 45);
-            const p2 = polarPoint(valueToAngleDeg(t), r - 55);
-            return <line x1={p1.x} y1={p1.y} x2={p2.x} y2={p2.y} stroke="black" stroke-width="2" />;
-          }}
-        </For>
-
-        <line x1={cx} y1={cy} x2={needleTip().x} y2={needleTip().y} stroke="#888" stroke-width="6" />
-        <circle cx={cx} cy={cy} r="10" fill="white" stroke="#333" stroke-width="3" />
-      </svg>
-
-      <div>
-        {thresholds().optimum.toFixed(1)} {VOLUME_UNITS[volumeUnit()].label}
+          <line
+            x1={cx}
+            y1={cy}
+            x2={needleTip().x}
+            y2={needleTip().y}
+            class="text-neutral-500"
+            stroke="currentColor"
+            stroke-width="6"
+            stroke-linecap="round"
+          />
+          <circle cx={cx} cy={cy} r="10" class="fill-white stroke-neutral-700" stroke-width="3" />
+        </svg>
       </div>
 
-      <table>
+      <div class="text-center">
+        <span class="text-3xl font-semibold tabular-nums text-neutral-900">
+          {thresholds().optimum.toFixed(1)}
+        </span>
+        <span class="ml-1 text-lg text-neutral-500">{VOLUME_UNITS[volumeUnit()].label}</span>
+      </div>
+
+      <table class="w-full border-collapse text-sm">
         <thead>
-          <tr>
-            <th>Recommended Minimum</th>
-            <th>Optimum</th>
-            <th>Recommended Maximum SSS</th>
-            <th>Recommended Maximum</th>
+          <tr class="border-b border-neutral-200">
+            <th class="py-2 text-left font-medium text-neutral-500">Recommended Minimum</th>
+            <th class="py-2 text-left font-medium text-neutral-500">Optimum</th>
+            <th class="py-2 text-left font-medium text-neutral-500">Recommended Maximum SSS</th>
+            <th class="py-2 text-left font-medium text-neutral-500">Recommended Maximum</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td>{thresholds().min.toFixed(1)}</td>
-            <td>{thresholds().optimum.toFixed(1)}</td>
-            <td>{thresholds().maxSSS.toFixed(1)}</td>
-            <td>{thresholds().max.toFixed(1)}</td>
+            <td class="py-2 font-semibold tabular-nums text-neutral-800">{thresholds().min.toFixed(1)}</td>
+            <td class="py-2 font-semibold tabular-nums text-neutral-800">{thresholds().optimum.toFixed(1)}</td>
+            <td class="py-2 font-semibold tabular-nums text-neutral-800">{thresholds().maxSSS.toFixed(1)}</td>
+            <td class="py-2 font-semibold tabular-nums text-neutral-800">{thresholds().max.toFixed(1)}</td>
           </tr>
         </tbody>
       </table>
 
-      <div>
-        <label>Anilox Screen ({SCREEN_UNITS[screenUnit()].label})</label>
-        <input
-          type="range"
-          min="0"
-          max={screenUnit() === "L/cm" ? 540 : 1400}
-          step="1"
-          value={screenValue()}
-          onInput={(e) => setScreenValue(Number(e.currentTarget.value))}
-        />
-        <input
-          type="number"
-          value={screenValue()}
-          onInput={(e) => setScreenValue(Number(e.currentTarget.value))}
-        />
+      <div class="space-y-2 border-t border-neutral-200 pt-6">
+        <label class='flex flex-col gap-1 text-xs font-medium uppercase tracking-wide text-neutral-500'>Anilox Screen ({SCREEN_UNITS[screenUnit()].label})</label>
+        <div class="flex items-center gap-4">
+          <input
+            type="range"
+            min="0"
+            max={screenUnit() === "L/cm" ? 540 : 1400}
+            step="1"
+            value={screenValue()}
+            onInput={(e) => setScreenValue(Number(e.currentTarget.value))}
+            class="h-2 w-full flex-1 cursor-pointer appearance-none rounded-full bg-neutral-200 accent-neutral-700"
+          />
+          <input
+            type="number"
+            value={screenValue()}
+            onInput={(e) => setScreenValue(Number(e.currentTarget.value))}
+            class="w-24 rounded-md border border-neutral-300 px-2 py-1.5 text-sm tabular-nums shadow-sm focus:outline-none focus:ring-2 focus:ring-neutral-400"
+          />
+        </div>
       </div>
     </div>
   );

@@ -23,3 +23,10 @@ export const RATIOS = { min: 0.6, maxSSS: 1.42, max: 1.7 };
 const CALIBRATION_LCM = 230;
 const CALIBRATION_OPTIMUM = 5.0;
 export const K = CALIBRATION_OPTIMUM * Math.pow(CALIBRATION_LCM, 2);
+
+export function computeOptimumCm3m2(screenLcm: number, cellFactor: number) {
+  if (screenLcm <= 0) return 0;
+  return (K / Math.pow(screenLcm, 2)) * cellFactor;
+}
+
+export const GAUGE_MAX_CM3M2 = 15;
