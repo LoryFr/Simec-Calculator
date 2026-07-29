@@ -55,7 +55,7 @@ export default function AniloxCalculator() {
     const p1 = polarPoint(a1, radius);
     const p2 = polarPoint(a2, radius);
     const largeArc = Math.abs(a1 - a2) > 180 ? 1 : 0;
-    return `M ${p1.x} ${p1.y} A ${radius} ${radius} 0 ${largeArc} 0 ${p2.x} ${p2.y}`;
+    return `M ${p1.x} ${p1.y} A ${radius} ${radius} 0 ${largeArc} 1 ${p2.x} ${p2.y}`;
   };
 
   // Le 5 fasce colorate, negli stessi valori soglia della tabella sotto.
