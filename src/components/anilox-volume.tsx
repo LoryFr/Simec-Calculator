@@ -58,16 +58,27 @@ export default function AniloxCalculator() {
     return `M ${p1.x} ${p1.y} A ${radius} ${radius} 0 ${largeArc} 1 ${p2.x} ${p2.y}`;
   };
 
-  // Le 5 fasce colorate, negli stessi valori soglia della tabella sotto.
-  // colorClass usa currentColor (via Tailwind text-*) invece di hex fissi,
-  // così restano coerenti con le classi bg-* usate nella versione a barra.
+  // Larghezza (in valore, non in percentuale) del margine verde attorno a optimum,
+  // come frazione della distanza più stretta tra optimum e min/maxSSS — così il
+  // margine resta sempre dentro [min, maxSSS], qualunque sia la lineatura scelta.
+  // Puramente una scelta di visualizzazione: i 4 threshold reali in tabella non
+  // cambiano, cambia solo dove taglio i colori sull'arco.
+  const GREEN_ZONE_HALF_WIDTH_RATIO = 0.35;
+
+  // Ora 6 fasce invece di 5: optimum è al centro della fascia verde (non più
+  // sul suo bordo), con una fascia gialla simmetrica di "avvicinamento"
+  // sia sotto che sopra il verde, prima di orange/red come già avevamo.
   const zones = createMemo(() => {
     const t = thresholds();
     const gMax = gaugeMax();
+    const halfWidth = Math.max(0, Math.min(t.optimum - t.min, t.maxSSS - t.optimum) * GREEN_ZONE_HALF_WIDTH_RATIO);
+    const greenStart = t.optimum - halfWidth;
+    const greenEnd = t.optimum + halfWidth;
     return [
       { from: 0, to: t.min, colorClass: "text-red-600" },
-      { from: t.min, to: t.optimum, colorClass: "text-green-600" },
-      { from: t.optimum, to: t.maxSSS, colorClass: "text-amber-400" },
+      { from: t.min, to: greenStart, colorClass: "text-amber-400" },
+      { from: greenStart, to: greenEnd, colorClass: "text-green-600" },
+      { from: greenEnd, to: t.maxSSS, colorClass: "text-amber-400" },
       { from: t.maxSSS, to: t.max, colorClass: "text-orange-500" },
       { from: t.max, to: gMax, colorClass: "text-red-600" },
     ];
