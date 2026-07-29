@@ -33,27 +33,25 @@ export default function AniloxCalculator() {
 
   const gaugeMax = createMemo(() => VOLUME_UNITS[volumeUnit()].fromCm3m2(GAUGE_MAX_CM3M2));
 
-  const cx = 300;
-  const cy = 260;
-  const r = 220;
-
-  const valueToAngleDeg = (value: number) => {
-    const clamped = Math.min(Math.max(value, 0), gaugeMax());
-    return 180 - (clamped / gaugeMax()) * 180;
-  };
-
-  const polarPoint = (angleDeg: number, radius: number) => {
-    const rad = (angleDeg * Math.PI) / 180;
-    return { x: cx + radius * Math.cos(rad), y: cy - radius * Math.sin(rad) };
-  };
-
-  const needleAngle = createMemo(() => valueToAngleDeg(thresholds().optimum));
-  const needleTip = createMemo(() => polarPoint(needleAngle(), r - 40));
-
-  const ticks = createMemo(() => {
+  // Percentuale [0-100] di un valore lungo la barra, rispetto alla scala fissa gaugeMax.
+  // Sostituisce valueToAngleDeg/polarPoint del vecchio gauge: qui basta una posizione
+  // lineare, non serve trigonometria.
+  const pct = (value: number) => {
     const gMax = gaugeMax();
-    const step = gMax / 15;
-    return Array.from({ length: 16 }, (_, i) => i * step);
+    const clamped = Math.min(Math.max(value, 0), gMax);
+    return (clamped / gMax) * 100;
+  };
+
+  // Percentuali delle 4 soglie, usate sia per larghezza/posizione delle zone
+  // colorate sia per posizionare le etichette sopra la barra.
+  const zonePct = createMemo(() => {
+    const t = thresholds();
+    return {
+      min: pct(t.min),
+      optimum: pct(t.optimum),
+      maxSSS: pct(t.maxSSS),
+      max: pct(t.max),
+    };
   });
 
   return (
@@ -99,30 +97,71 @@ export default function AniloxCalculator() {
         </label>
       </div>
 
-      <div class="flex justify-center">
-        <svg viewBox="0 0 600 300" class="w-full max-w-xl text-neutral-300">
-          <For each={ticks()}>
-            {(t) => {
-              const p1 = polarPoint(valueToAngleDeg(t), r - 45);
-              const p2 = polarPoint(valueToAngleDeg(t), r - 55);
-              return (
-                <line x1={p1.x} y1={p1.y} x2={p2.x} y2={p2.y} stroke="currentColor" stroke-width="2" />
-              );
-            }}
-          </For>
-
-          <line
-            x1={cx}
-            y1={cy}
-            x2={needleTip().x}
-            y2={needleTip().y}
-            class="text-neutral-500"
-            stroke="currentColor"
-            stroke-width="6"
-            stroke-linecap="round"
+      {/* Meter orizzontale al posto del gauge semicircolare — stessa scala fissa
+          (gaugeMax), stessi 4 threshold, ma posizione lineare invece di angolo */}
+      <div class="pt-2">
+        <div class="relative h-7 overflow-hidden rounded-md">
+          <div
+            class="absolute inset-y-0 bg-red-600"
+            style={{ left: "0%", width: `${zonePct().min}%` }}
           />
-          <circle cx={cx} cy={cy} r="10" class="fill-white stroke-neutral-700" stroke-width="3" />
-        </svg>
+          <div
+            class="absolute inset-y-0 bg-green-600"
+            style={{ left: `${zonePct().min}%`, width: `${zonePct().optimum - zonePct().min}%` }}
+          />
+          <div
+            class="absolute inset-y-0 bg-amber-400"
+            style={{ left: `${zonePct().optimum}%`, width: `${zonePct().maxSSS - zonePct().optimum}%` }}
+          />
+          <div
+            class="absolute inset-y-0 bg-orange-500"
+            style={{ left: `${zonePct().maxSSS}%`, width: `${zonePct().max - zonePct().maxSSS}%` }}
+          />
+          <div
+            class="absolute inset-y-0 bg-red-600"
+            style={{ left: `${zonePct().max}%`, width: `${100 - zonePct().max}%` }}
+          />
+          {/* Marcatore del valore optimum calcolato */}
+          <div
+            class="absolute top-[-6px] h-9 w-0.5 -translate-x-1/2 bg-neutral-900"
+            style={{ left: `${zonePct().optimum}%` }}
+          />
+        </div>
+
+        {/* Etichette delle 4 soglie, posizionate con la stessa percentuale delle zone */}
+        <div class="relative mt-1 h-5">
+          <span
+            class="absolute -translate-x-1/2 text-xs text-neutral-500 tabular-nums"
+            style={{ left: `${zonePct().min}%` }}
+          >
+            {thresholds().min.toFixed(1)}
+          </span>
+          <span
+            class="absolute -translate-x-1/2 text-xs font-semibold text-neutral-900 tabular-nums"
+            style={{ left: `${zonePct().optimum}%` }}
+          >
+            {thresholds().optimum.toFixed(1)}
+          </span>
+          <span
+            class="absolute -translate-x-1/2 text-xs text-neutral-500 tabular-nums"
+            style={{ left: `${zonePct().maxSSS}%` }}
+          >
+            {thresholds().maxSSS.toFixed(1)}
+          </span>
+          <span
+            class="absolute -translate-x-1/2 text-xs text-neutral-500 tabular-nums"
+            style={{ left: `${zonePct().max}%` }}
+          >
+            {thresholds().max.toFixed(1)}
+          </span>
+        </div>
+
+        {/* Estremi della scala fissa */}
+        <div class="mt-1 flex justify-between text-xs text-neutral-400">
+          <span>0</span>
+          <span>{VOLUME_UNITS[volumeUnit()].label}</span>
+          <span class="tabular-nums">{gaugeMax().toFixed(1)}</span>
+        </div>
       </div>
 
       <div class="text-center">
