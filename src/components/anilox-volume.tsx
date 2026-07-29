@@ -33,6 +33,36 @@ export default function AniloxCalculator() {
 
   const gaugeMax = createMemo(() => VOLUME_UNITS[volumeUnit()].fromCm3m2(GAUGE_MAX_CM3M2));
 
+  // Lineatura di riferimento usata SOLO per posizionare le fasce colorate del
+  // gauge — deve coincidere con la costante di calibrazione della libreria
+  // (CALIBRATION_LCM in anilox.ts). Le fasce restano fisse quando muovi lo
+  // slider "Anilox Screen" (comportamento del competitor Apex): non derivano
+  // più da screenLcm(), ma da questo valore costante. Reagiscono comunque a
+  // Engraving (roller diverso) e Transfer Volume (unità diversa), perché sono
+  // scelte diverse, non un aggiustamento continuo dello stesso roller.
+  const REFERENCE_SCREEN_LCM_FOR_SCALE = 230;
+
+  const fixedZoneThresholdsCm3m2 = createMemo(() => {
+    const optimum = computeOptimumCm3m2(REFERENCE_SCREEN_LCM_FOR_SCALE, ENGRAVINGS[engraving()].cellFactor);
+    return {
+      min: optimum * RATIOS.min,
+      optimum,
+      maxSSS: optimum * RATIOS.maxSSS,
+      max: optimum * RATIOS.max,
+    };
+  });
+
+  const fixedZoneThresholds = createMemo(() => {
+    const t = fixedZoneThresholdsCm3m2();
+    const conv = VOLUME_UNITS[volumeUnit()].fromCm3m2;
+    return {
+      min: conv(t.min),
+      optimum: conv(t.optimum),
+      maxSSS: conv(t.maxSSS),
+      max: conv(t.max),
+    };
+  });
+
   const cx = 300;
   const cy = 260;
   const r = 220;
@@ -68,8 +98,10 @@ export default function AniloxCalculator() {
   // Ora 6 fasce invece di 5: optimum è al centro della fascia verde (non più
   // sul suo bordo), con una fascia gialla simmetrica di "avvicinamento"
   // sia sotto che sopra il verde, prima di orange/red come già avevamo.
+  // Nota: usa fixedZoneThresholds(), non thresholds() — è questo che rende
+  // le fasce indipendenti dallo slider "Anilox Screen".
   const zones = createMemo(() => {
-    const t = thresholds();
+    const t = fixedZoneThresholds();
     const gMax = gaugeMax();
     const halfWidth = Math.max(0, Math.min(t.optimum - t.min, t.maxSSS - t.optimum) * GREEN_ZONE_HALF_WIDTH_RATIO);
     const greenStart = t.optimum - halfWidth;
