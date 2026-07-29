@@ -57,7 +57,7 @@ export default function AniloxCalculator() {
   });
 
   return (
-    <div class="mx-auto max-w-3xl space-y-8 rounded-xl border border-neutral-200 bg-white p-6 font-sans text-neutral-800 shadow-sm">
+    <div class="space-y-8 rounded-xl border border-neutral-200 bg-white p-6 font-sans text-neutral-800 shadow-sm">
       <div class="flex flex-wrap gap-6 border-b border-neutral-200 pb-6">
         <label class="flex flex-col gap-1 text-xs font-medium uppercase tracking-wide text-neutral-500">
           Engraving{" "}

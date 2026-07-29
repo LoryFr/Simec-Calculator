@@ -17,7 +17,7 @@ export default function PlateToAniloxCalculator() {
     const labelClass = "text-xs font-medium uppercase tracking-wide text-neutral-500";
 
     return (
-        <div class="mx-auto max-w-5xl space-y-8 rounded-xl border border-neutral-200 bg-white p-6 font-sans text-neutral-800 shadow-sm">
+        <div class="space-y-8 rounded-xl border border-neutral-200 bg-white p-6 font-sans text-neutral-800 shadow-sm">
             <div class="rounded-md bg-orange-700 px-4 py-3 text-lg font-semibold text-white">Plate Screen</div>
 
             {/* Valori correnti */}
