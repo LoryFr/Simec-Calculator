@@ -18,8 +18,6 @@ export default function PlateToAniloxCalculator() {
 
     return (
         <div class="w-full space-y-8 rounded-xl border border-neutral-200 bg-white p-6 font-sans text-neutral-800 shadow-sm">
-            <div class="rounded-md bg-orange-700 px-4 py-3 text-lg font-semibold text-white">Plate Screen</div>
-
             {/* Valori correnti */}
             <div class="flex justify-center gap-8">
                 <div class="text-center">
