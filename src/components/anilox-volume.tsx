@@ -214,7 +214,7 @@ export default function AniloxCalculator() {
 
       <table class="w-full border-collapse text-sm">
         <thead>
-          <tr class="border-b border-neutral-200">
+          <tr class="border-b border-blue-500">
             <th class="py-2 text-left font-medium text-neutral-500">Recommended Minimum</th>
             <th class="py-2 text-left font-medium text-neutral-500">Optimum</th>
             <th class="py-2 text-left font-medium text-neutral-500">Recommended Maximum SSS</th>
