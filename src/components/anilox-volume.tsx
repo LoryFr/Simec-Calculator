@@ -215,18 +215,18 @@ export default function AniloxCalculator() {
       <table class="w-full border-collapse text-sm">
         <thead>
           <tr class="border-b border-blue-500">
-            <th class="py-2 text-left font-medium text-neutral-500">Recommended Minimum</th>
-            <th class="py-2 text-left font-medium text-neutral-500">Optimum</th>
-            <th class="py-2 text-left font-medium text-neutral-500">Recommended Maximum SSS</th>
-            <th class="py-2 text-left font-medium text-neutral-500">Recommended Maximum</th>
+            <th class="py-2 text-left font-medium text-neutral-100">Recommended Minimum</th>
+            <th class="py-2 text-left font-medium text-neutral-100">Optimum</th>
+            <th class="py-2 text-left font-medium text-neutral-100">Recommended Maximum SSS</th>
+            <th class="py-2 text-left font-medium text-neutral-100">Recommended Maximum</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td class="py-2 font-semibold tabular-nums text-neutral-800">{thresholds().min.toFixed(1)}</td>
-            <td class="py-2 font-semibold tabular-nums text-neutral-800">{thresholds().optimum.toFixed(1)}</td>
-            <td class="py-2 font-semibold tabular-nums text-neutral-800">{thresholds().maxSSS.toFixed(1)}</td>
-            <td class="py-2 font-semibold tabular-nums text-neutral-800">{thresholds().max.toFixed(1)}</td>
+            <td class="py-2 font-semibold tabular-nums text-neutral-300">{thresholds().min.toFixed(1)}</td>
+            <td class="py-2 font-semibold tabular-nums text-neutral-300">{thresholds().optimum.toFixed(1)}</td>
+            <td class="py-2 font-semibold tabular-nums text-neutral-300">{thresholds().maxSSS.toFixed(1)}</td>
+            <td class="py-2 font-semibold tabular-nums text-neutral-300">{thresholds().max.toFixed(1)}</td>
           </tr>
         </tbody>
       </table>
