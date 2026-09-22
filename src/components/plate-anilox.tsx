@@ -17,7 +17,7 @@ export default function PlateToAniloxCalculator() {
     const labelClass = "text-xs font-medium uppercase tracking-wide text-neutral-500";
 
     return (
-        <div class="w-full space-y-8 rounded-xl border border-neutral-200 bg-white p-6 font-sans text-neutral-800 shadow-sm">
+        <div class="w-full space-y-8 rounded-xl border border-neutral-200 bg-neutral-950 p-6 font-sans text-neutral-800 shadow-sm">
             {/* Valori correnti */}
             <div class="flex justify-center gap-8">
                 <div class="text-center">
