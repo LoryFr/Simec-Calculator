@@ -141,7 +141,7 @@ export default function AniloxCalculator() {
           </select>
         </label>
 
-        <label class="flex flex-col gap-1 text-xs font-medium uppercase tracking-wide text-neutral-500">
+        <label class="flex flex-col gap-1 text-xs font-medium uppercase tracking-wide text-neutral-100">
           Screen Type{" "}
           <select
             class="rounded-md border border-neutral-300 bg-white px-3 py-1.5 text-sm text-neutral-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-neutral-400"
@@ -154,7 +154,7 @@ export default function AniloxCalculator() {
           </select>
         </label>
 
-        <label class="flex flex-col gap-1 text-xs font-medium uppercase tracking-wide text-neutral-500">
+        <label class="flex flex-col gap-1 text-xs font-medium uppercase tracking-wide text-neutral-100">
           Transfer Volume{" "}
           <select
             class="rounded-md border border-neutral-300 bg-white px-3 py-1.5 text-sm text-neutral-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-neutral-400"
