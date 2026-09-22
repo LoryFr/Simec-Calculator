@@ -128,7 +128,7 @@ export default function AniloxCalculator() {
   return (
     <div class="w-full space-y-8 rounded-xl border border-neutral-900 bg-neutral-950 p-6 font-sans text-neutral-800 shadow-sm">
       <div class="flex flex-wrap gap-6 border-b border-blue-500 pb-6">
-        <label class="flex flex-col gap-1 text-xs font-medium uppercase tracking-wide text-neutral-500">
+        <label class="flex flex-col gap-1 text-xs font-medium uppercase tracking-wide text-neutral-100">
           Engraving{" "}
           <select
             class="rounded-md border border-neutral-300 bg-white px-3 py-1.5 text-sm text-neutral-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-neutral-400"
