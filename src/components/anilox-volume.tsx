@@ -232,7 +232,7 @@ export default function AniloxCalculator() {
       </table>
 
       <div class="space-y-2 border-t border-blue-500 pt-6">
-        <label class='flex flex-col gap-1 text-xs font-medium uppercase tracking-wide text-neutral-500'>Anilox Screen ({SCREEN_UNITS[screenUnit()].label})</label>
+        <label class='flex flex-col gap-1 text-xs font-medium uppercase tracking-wide text-neutral-100'>Anilox Screen ({SCREEN_UNITS[screenUnit()].label})</label>
         <div class="flex items-center gap-4">
           <input
             type="range"
