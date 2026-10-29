@@ -126,12 +126,12 @@ export default function AniloxCalculator() {
   });
 
   return (
-    <div class="w-full space-y-8 rounded-xl border border-neutral-900 bg-neutral-950 p-6 font-sans text-neutral-800 shadow-sm">
+    <div class="w-full space-y-8 rounded-xl border border-neutral-800 bg-neutral-900 p-6 font-sans text-neutral-800 shadow-sm">
       <div class="flex flex-wrap gap-6 border-b border-blue-500 pb-6">
         <label class="flex flex-col gap-1 text-xs font-medium uppercase tracking-wide text-neutral-100">
           Engraving{" "}
           <select
-            class="rounded-md border border-neutral-300 bg-white px-3 py-1.5 text-sm text-neutral-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-neutral-400"
+            class="rounded-md border border-neutral-600 bg-neutral-800 px-3 py-1.5 text-sm text-neutral-50 shadow-sm focus:outline-none focus:ring-2 focus:ring-neutral-400"
             value={engraving()}
             onChange={(e) => setEngraving(e.currentTarget.value as EngravingKey)}
           >
@@ -144,7 +144,7 @@ export default function AniloxCalculator() {
         <label class="flex flex-col gap-1 text-xs font-medium uppercase tracking-wide text-neutral-100">
           Screen Type{" "}
           <select
-            class="rounded-md border border-neutral-300 bg-white px-3 py-1.5 text-sm text-neutral-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-neutral-400"
+            class="rounded-md border bg-neutral-800 border-neutral-600 px-3 py-1.5 text-sm text-neutral-50 shadow-sm focus:outline-none focus:ring-2 focus:ring-neutral-400"
             value={screenUnit()}
             onChange={(e) => setScreenUnit(e.currentTarget.value as ScreenUnitKey)}
           >
@@ -157,7 +157,7 @@ export default function AniloxCalculator() {
         <label class="flex flex-col gap-1 text-xs font-medium uppercase tracking-wide text-neutral-100">
           Transfer Volume{" "}
           <select
-            class="rounded-md border border-neutral-300 bg-white px-3 py-1.5 text-sm text-neutral-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-neutral-400"
+            class="rounded-md border border-neutral-600 bg-neutral-800 px-3 py-1.5 text-sm text-neutral-50 shadow-sm focus:outline-none focus:ring-2 focus:ring-neutral-400"
             value={volumeUnit()}
             onChange={(e) => setVolumeUnit(e.currentTarget.value as VolumeUnitKey)}
           >
@@ -206,10 +206,10 @@ export default function AniloxCalculator() {
       </div>
 
       <div class="text-center">
-        <span class="text-3xl font-semibold tabular-nums text-neutral-900">
+        <span class="text-3xl font-semibold tabular-nums text-neutral-50">
           {thresholds().optimum.toFixed(1)}
         </span>
-        <span class="ml-1 text-lg text-neutral-500">{VOLUME_UNITS[volumeUnit()].label}</span>
+        <span class="ml-1 text-lg text-neutral-300">{VOLUME_UNITS[volumeUnit()].label}</span>
       </div>
 
       <table class="w-full border-collapse text-sm">
@@ -241,13 +241,13 @@ export default function AniloxCalculator() {
             step="1"
             value={screenValue()}
             onInput={(e) => setScreenValue(Number(e.currentTarget.value))}
-            class="h-2 w-full flex-1 cursor-pointer appearance-none rounded-full bg-neutral-200 accent-neutral-700"
+            class="h-2 w-full flex-1 cursor-pointer appearance-none rounded-full bg-neutral-200 accent-blue-500"
           />
           <input
             type="number"
             value={screenValue()}
             onInput={(e) => setScreenValue(Number(e.currentTarget.value))}
-            class="w-24 rounded-md border border-neutral-300 px-2 py-1.5 text-sm tabular-nums shadow-sm focus:outline-none focus:ring-2 focus:ring-neutral-400"
+            class="w-24 rounded-md border border-neutral-600 bg-neutral-800 text-neutral-50 px-2 py-1.5 text-sm tabular-nums shadow-sm focus:outline-none focus:ring-2 focus:ring-neutral-400"
           />
         </div>
       </div>
