@@ -180,24 +180,23 @@ export default function AniloxCalculator(handle: Handle) {
           <span class="ml-1 text-lg text-neutral-300">{VOLUME_UNITS[volumeUnit].label}</span>
         </div>
 
-        <table class="w-full border-collapse text-sm">
-          <thead>
-            <tr class="border-b border-blue-500">
-              <th class="py-2 text-left font-medium text-neutral-100">Recommended Minimum</th>
-              <th class="py-2 text-left font-medium text-neutral-100">Optimum</th>
-              <th class="py-2 text-left font-medium text-neutral-100">Recommended Maximum SSS</th>
-              <th class="py-2 text-left font-medium text-neutral-100">Recommended Maximum</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="py-2 font-semibold tabular-nums text-neutral-300">{thresholds.min.toFixed(1)}</td>
-              <td class="py-2 font-semibold tabular-nums text-neutral-300">{thresholds.optimum.toFixed(1)}</td>
-              <td class="py-2 font-semibold tabular-nums text-neutral-300">{thresholds.maxSSS.toFixed(1)}</td>
-              <td class="py-2 font-semibold tabular-nums text-neutral-300">{thresholds.max.toFixed(1)}</td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="grid grid-cols-2 gap-3 md:grid-cols-4">
+          {[
+            { label: "Recommended Minimum", value: thresholds.min },
+            { label: "Optimum", value: thresholds.optimum },
+            { label: "Recommended Maximum SSS", value: thresholds.maxSSS },
+            { label: "Recommended Maximum", value: thresholds.max },
+          ].map(({ label, value }) => (
+            <div key={label} class="rounded-md border border-neutral-700 bg-neutral-800 p-3">
+              <div class="text-[11px] font-medium uppercase leading-tight tracking-wide text-neutral-400">
+                {label}
+              </div>
+              <div class="mt-1 text-lg font-semibold tabular-nums text-neutral-50">
+                {value.toFixed(1)}
+              </div>
+            </div>
+          ))}
+        </div>
 
         <div class="space-y-2 border-t border-blue-500 pt-6">
           <label class={labelClass}>Anilox Screen ({SCREEN_UNITS[screenUnit].label})</label>
